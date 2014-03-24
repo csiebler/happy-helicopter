@@ -1,5 +1,5 @@
 window.onload = (function() {
-    var WIDTH = 800, HEIGHT = 600;
+    var WIDTH = 900, HEIGHT = 600;
     Crafty.init(WIDTH, HEIGHT);
 
     Crafty.sprite(32,"img/sprites.png", {
@@ -19,12 +19,14 @@ window.onload = (function() {
     });
 
     function generateWalls() {
-      var numberOfWalls = 6;
+      var numberOfWalls = 4;
       var offset = 500;
       for (var i = 0; i < numberOfWalls; i++) {
-        var openSpaceX = Crafty.math.randomInt(HEIGHT/16, HEIGHT/2);
+        var openSpaceY = Crafty.math.randomInt(HEIGHT/16, HEIGHT/2);
         var openSpaceHeight = Crafty.math.randomInt(HEIGHT/4, HEIGHT/2);
-	generateWall(offset + i * (WIDTH+64)/numberOfWalls, Crafty.math.randomInt(400,600), 200);
+	var x = offset + i * (WIDTH+64)/numberOfWalls;
+	generateWall(x, 0, openSpaceY);
+	generateWall(x, openSpaceY + openSpaceHeight, HEIGHT - (openSpaceY + openSpaceHeight));
       }
     }
 
@@ -50,9 +52,25 @@ window.onload = (function() {
     Crafty.scene("main", function() {
       generateWalls();
       Crafty.background("#DDDDDD");
-      var pl = Crafty.e("Player, 2D, Canvas, player, Fourway")
-                  .attr({x: WIDTH/4, y: HEIGHT/2, w: 64, h: 64})
-                  .multiway(14, { UP_ARROW: -90, DOWN_ARROW: 90 });
+      var pl = Crafty.e("Player, 2D, Canvas, player")
+                  .attr({x: WIDTH/4, y: HEIGHT/2, w: 64, h: 64, vy: 0})
+		  .bind('EnterFrame', function() {
+                    if (this.vy < 10) {
+                      this.vy += 1;
+                    }
+		    if (this.x < 0) {
+                      this.x = 0;
+                    }
+                    if (this.y > HEIGHT - 2 * this.h) {
+                      this.y = HEIGHT - 2 * this.h;
+		    }
+                    this.y += this.vy;
+		  })
+                  .bind('KeyDown', function(e) {
+                    if(e.key == Crafty.keys.SPACE) {
+                      this.vy = -12;
+                    }
+                  });
     
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20, points: 0 })
