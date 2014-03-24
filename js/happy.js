@@ -71,6 +71,13 @@ window.onload = (function() {
                       this.vy = -12;
                     }
                   });
+
+      Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
+        Crafty("Player").each(function () {
+          this.vy = -12;
+        });
+      });
+
     
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20, points: 0 })
