@@ -13,9 +13,6 @@ window.onload = (function() {
       });
 
       Crafty.background("#000");
-      Crafty.e("2D, DOM, text").attr({w: 100, h: 20, x: 150, y: 120})
-        .text("Loading")
-        .css({"text-align": "center"});
     });
 
     function generateWalls() {
@@ -53,18 +50,18 @@ window.onload = (function() {
       generateWalls();
       Crafty.background("#DDDDDD");
       var pl = Crafty.e("Player, 2D, Canvas, player")
-                  .attr({x: WIDTH/4, y: HEIGHT/2, w: 64, h: 64, vy: 0})
+                  .attr({x: WIDTH/4, y: HEIGHT/3, w: 64, h: 64, vy: 0})
 		  .bind('EnterFrame', function() {
                     if (this.vy < 10) {
                       this.vy += 1;
                     }
-		    if (this.x < 0) {
-                      this.x = 0;
+                    this.y += this.vy;
+		    if (this.y < 0) {
+                      this.y = 0;
                     }
                     if (this.y > HEIGHT - 2 * this.h) {
                       this.y = HEIGHT - 2 * this.h;
 		    }
-                    this.y += this.vy;
 		  })
                   .bind('KeyDown', function(e) {
                     if(e.key == Crafty.keys.SPACE) {
