@@ -27,47 +27,56 @@ window.onload = (function() {
       }
     }
 
+    var scrollWall = function() {
+      this.x -= 5;
+      if (this.x < (0 - this.w)) {
+        this.x = WIDTH;
+        Crafty("Points").each(function () { 
+	  this.text(++this.points + " Points") });
+	}
+    };
+
+    var resetPoints = function() {
+      Crafty("Points").each(function () { 
+        this.points = 0;
+        this.text(this.points + " Points")
+      });
+    };
+
     function generateWall(wX, wY, wH, speed) {
       Crafty.e("2D, Canvas, wall, Collision")
       	.attr({ x: wX, y: wY, w: 64, h: wH })
-        .bind('EnterFrame', function () {
-          this.x -= 5;
-          if (this.x < (0 - this.w)) {
-	    this.x = WIDTH;
-	    Crafty("Points").each(function () { 
-	   	this.text(++this.points + " Points") });
-	  }
-	})
-	.onHit("Player", function() {
-	  Crafty("Points").each(function () { 
-	         this.points = 0;
-	         this.text(this.points + " Points") });
+        .bind('EnterFrame', scrollWall)
+	.onHit("Player", resetPoints); 
+    };
 
-	});
-    }
+
+    var updatePlayer = function() {
+          if (this.vy < 10) {
+            this.vy += 1;
+          }
+          this.y += this.vy;
+	  if (this.y < 0) {
+            this.y = 0;
+          }
+          if (this.y > HEIGHT - 2 * this.h) {
+            this.y = HEIGHT - 2 * this.h;
+	  }
+    };
+
+    var liftPlayer = function(e) {
+        if(e.key == Crafty.keys.SPACE) {
+          this.vy = -12;
+        }
+    };
 
     Crafty.scene("main", function() {
       generateWalls();
       Crafty.background("#DDDDDD");
       var pl = Crafty.e("Player, 2D, Canvas, player")
                   .attr({x: WIDTH/4, y: HEIGHT/3, w: 64, h: 64, vy: 0})
-		  .bind('EnterFrame', function() {
-                    if (this.vy < 10) {
-                      this.vy += 1;
-                    }
-                    this.y += this.vy;
-		    if (this.y < 0) {
-                      this.y = 0;
-                    }
-                    if (this.y > HEIGHT - 2 * this.h) {
-                      this.y = HEIGHT - 2 * this.h;
-		    }
-		  })
-                  .bind('KeyDown', function(e) {
-                    if(e.key == Crafty.keys.SPACE) {
-                      this.vy = -12;
-                    }
-                  });
+		  .bind('EnterFrame', updatePlayer) 
+                  .bind('KeyDown', liftPlayer);
 
       Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
         Crafty("Player").each(function () {
@@ -79,7 +88,6 @@ window.onload = (function() {
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20, points: 0 })
         .text("0 Points");
-
      });
 
     Crafty.scene("loading");
