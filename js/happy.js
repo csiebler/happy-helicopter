@@ -1,5 +1,5 @@
 window.onload = (function() {
-    var WIDTH = 900, HEIGHT = 600;
+    var WIDTH = 960, HEIGHT = 640;
     var PLAYER_X = WIDTH / 4;
     var PLAYER_W = 64;
     var PLAYER_H = 64;
