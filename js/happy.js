@@ -1,5 +1,8 @@
 window.onload = (function() {
     var WIDTH = 900, HEIGHT = 600;
+    var PLAYER_X = WIDTH / 4;
+    var PLAYER_W = 64;
+    var PLAYER_H = 64;
     Crafty.init(WIDTH, HEIGHT);
 
     Crafty.sprite(32,"img/sprites.png", {
@@ -29,11 +32,25 @@ window.onload = (function() {
 
     var scrollWall = function() {
       this.x -= 5;
+
+      // TODO Break out
       if (this.x < (0 - this.w)) {
         this.x = WIDTH;
+	this.passed = false;
+      }
+
+      // TODO Break out
+      if (this.x < (PLAYER_X - PLAYER_W)  && !this.passed) {
+        incrementPoints();
+	this.passed = true;
+      }
+    };
+
+    function incrementPoints() {
         Crafty("Points").each(function () { 
-	  this.text(++this.points + " Points") });
-	}
+	  this.points++;
+	  this.text(this.points + " Points");
+	});
     };
 
     var resetPoints = function() {
@@ -45,7 +62,7 @@ window.onload = (function() {
 
     function generateWall(wX, wY, wH, speed) {
       Crafty.e("2D, Canvas, wall, Collision")
-      	.attr({ x: wX, y: wY, w: 64, h: wH })
+      	.attr({ x: wX, y: wY, w: 64, h: wH, passed: false })
         .bind('EnterFrame', scrollWall)
 	.onHit("Player", resetPoints); 
     };
@@ -74,7 +91,7 @@ window.onload = (function() {
       generateWalls();
       Crafty.background("#DDDDDD");
       var pl = Crafty.e("Player, 2D, Canvas, player")
-                  .attr({x: WIDTH/4, y: HEIGHT/3, w: 64, h: 64, vy: 0})
+                  .attr({x: PLAYER_X, y: HEIGHT/3, w: PLAYER_W, h: PLAYER_H, vy: 0})
 		  .bind('EnterFrame', updatePlayer) 
                   .bind('KeyDown', liftPlayer);
 
