@@ -22,8 +22,16 @@ window.onload = (function() {
       Crafty.background("#0F0");
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20 })
-        .text("HAPPY HELICOPTER - Press any key to start")
+        .text("HAPPY HELICOPTER")
+	.textFont({ size: '40px' })
         .bind('KeyDown', restartGame);
+
+      Crafty.e("Points, Canvas, 2D, Text, Mouse")
+	.attr({ x: 20, y: 70, w: 100, h: 20 })
+        .text("(Click here to start)")
+	.textFont({ size: '40px' })
+        .bind('Click', restartGame);
+
     });
 
     Crafty.scene("gameover", function() {
@@ -31,7 +39,14 @@ window.onload = (function() {
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20 })
         .text("GAME OVER: " + points + " Points. Press any key to restart")
+	.textFont({ size: '40px', weight: 'bold' })
         .bind('KeyDown', restartGame);
+
+      Crafty.e("Points, Canvas, 2D, Text, Mouse")
+	.attr({ x: 20, y: 70, w: 100, h: 20 })
+        .text("(Click here to restart)")
+	.textFont({ size: '40px' })
+        .bind('Click', restartGame);
     });
 
     function generateWalls() {
@@ -121,6 +136,7 @@ window.onload = (function() {
 
       Crafty.e("Points, Canvas, 2D, Text")
 	.attr({ x: 20, y: 20, w: 100, h: 20 })
+	.textFont({ size: '20px' })
         .text(points + " Points");
     });
 
