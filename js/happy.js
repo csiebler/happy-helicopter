@@ -3,6 +3,7 @@ window.onload = (function() {
     var PLAYER_X = WIDTH / 4;
     var PLAYER_W = 64;
     var PLAYER_H = 64;
+    var points = 0;
     Crafty.init(WIDTH, HEIGHT);
 
     Crafty.sprite(32,"img/sprites.png", {
@@ -11,11 +12,26 @@ window.onload = (function() {
      });
 
     Crafty.scene("loading", function() {
-      Crafty.load(["img/sprites.png"], function() {
-        Crafty.scene("main");
-      });
-
       Crafty.background("#000");
+      Crafty.load(["img/sprites.png"], function() {
+        Crafty.scene("title");
+      });
+    });
+
+    Crafty.scene("title", function() {
+      Crafty.background("#0F0");
+      Crafty.e("Points, Canvas, 2D, Text")
+	.attr({ x: 20, y: 20, w: 100, h: 20 })
+        .text("HAPPY HELICOPTER - Press any key to start")
+        .bind('KeyDown', restartGame);
+    });
+
+    Crafty.scene("gameover", function() {
+      Crafty.background("#F00");
+      Crafty.e("Points, Canvas, 2D, Text")
+	.attr({ x: 20, y: 20, w: 100, h: 20 })
+        .text("GAME OVER: " + points + " Points. Press any key to restart")
+        .bind('KeyDown', restartGame);
     });
 
     function generateWalls() {
@@ -47,24 +63,26 @@ window.onload = (function() {
     };
 
     function incrementPoints() {
+	points++;
         Crafty("Points").each(function () { 
-	  this.points++;
-	  this.text(this.points + " Points");
+	  this.text(points + " Points");
 	});
     };
 
-    var resetPoints = function() {
-      Crafty("Points").each(function () { 
-        this.points = 0;
-        this.text(this.points + " Points")
-      });
+    var restartGame = function(e) {
+      points = 0;
+      Crafty.scene("main");
+    }
+
+    var endGame  = function() {
+      Crafty.scene("gameover");
     };
 
     function generateWall(wX, wY, wH, speed) {
       Crafty.e("2D, Canvas, wall, Collision")
       	.attr({ x: wX, y: wY, w: 64, h: wH, passed: false })
         .bind('EnterFrame', scrollWall)
-	.onHit("Player", resetPoints); 
+	.onHit("Player", endGame); 
     };
 
 
@@ -101,11 +119,10 @@ window.onload = (function() {
         });
       });
 
-    
       Crafty.e("Points, Canvas, 2D, Text")
-	.attr({ x: 20, y: 20, w: 100, h: 20, points: 0 })
-        .text("0 Points");
-     });
+	.attr({ x: 20, y: 20, w: 100, h: 20 })
+        .text(points + " Points");
+    });
 
     Crafty.scene("loading");
 });
