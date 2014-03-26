@@ -112,6 +112,8 @@ window.onload = (function() {
           if (this.y > HEIGHT - 2 * this.h) {
             this.y = HEIGHT - 2 * this.h;
 	  }
+
+	  this.rotation = this.vy / 2;
     };
 
     var liftPlayer = function(e) {
@@ -124,7 +126,7 @@ window.onload = (function() {
       generateWalls();
       Crafty.background("#DDDDDD");
       var pl = Crafty.e("Player, 2D, Canvas, player")
-                  .attr({x: PLAYER_X, y: HEIGHT/3, w: PLAYER_W, h: PLAYER_H, vy: 0})
+                  .attr({x: PLAYER_X, y: HEIGHT/3, w: PLAYER_W, h: PLAYER_H, rotation: 0, vy: 0})
 		  .bind('EnterFrame', updatePlayer) 
                   .bind('KeyDown', liftPlayer);
 
