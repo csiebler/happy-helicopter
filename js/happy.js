@@ -61,6 +61,13 @@ window.onload = (function() {
       }
     }
 
+    function generateWall(wX, wY, wH, speed) {
+      Crafty.e("2D, Canvas, wall, Collision")
+      	.attr({ x: wX, y: wY, w: 64, h: wH, passed: false })
+        .bind('EnterFrame', scrollWall)
+	.onHit("Player", endGame); 
+    };
+
     var scrollWall = function() {
       this.x -= 5;
 
@@ -93,26 +100,14 @@ window.onload = (function() {
       Crafty.scene("gameover");
     };
 
-    function generateWall(wX, wY, wH, speed) {
-      Crafty.e("2D, Canvas, wall, Collision")
-      	.attr({ x: wX, y: wY, w: 64, h: wH, passed: false })
-        .bind('EnterFrame', scrollWall)
-	.onHit("Player", endGame); 
-    };
-
-
     var updatePlayer = function() {
           if (this.vy < 10) {
             this.vy += 1;
           }
           this.y += this.vy;
-	  if (this.y < 0) {
-            this.y = 0;
-          }
-          if (this.y > HEIGHT - 2 * this.h) {
-            this.y = HEIGHT - 2 * this.h;
-	  }
 
+	  // Limit y position
+	  this.y = Crafty.math.clamp(this.y, 0, HEIGHT - 2 * this.h);
 	  this.rotation = this.vy / 2;
     };
 
